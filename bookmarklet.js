@@ -1,6 +1,6 @@
 (function () {
     var branches = [],
-        dashboards =    ["Filter Results: Ready for DevInt QA",
+        dashboards =    ["Filter Results: Ready for Devint QA",
                         "Filter Results: Ready for Code Review",
                         "Filter Results: Ready for Production Deployment"];
                         
