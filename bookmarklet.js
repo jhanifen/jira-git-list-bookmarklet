@@ -1,29 +1,49 @@
 (function () {
-    var branches = [],
-        dashboards =    ["Filter Results: Ready for Devint QA",
-                        "Filter Results: Ready for Production Deployment"];
-                        
-    jQuery('h3.dashboard-item-title').each(function(){
-        if( jQuery.inArray( jQuery(this).text(), dashboards ) > -1){
-            jQuery(this).parents('.dashboard-item-header').next('.dashboard-item-content').find('iframe').contents().find('tr.issuerow').each(function(){
-                var row = jQuery(this),
-                subsystem = row.find('.customfield_10080 .labels').text().trim();
+    var i,
+        len,
+        string,
+        dashboard_key,
+        dashboard,
+        branches = [],
+        branches_count = 0,
+        dashboards = [ // Put dashboards here in the order you want them merged
+            'Filter Results: Ready for Production Deployment',
+            'Filter Results: Ready for Devint QA'
+        ],
+        dashboard_groups = {};
 
-                if(subsystem === "None" || subsystem.search('panama') > -1 ){
-                    branches.push(row.attr('data-issuekey'));
+    for (dashboard_key in dashboards) {
+        dashboard = dashboards[dashboard_key];
+        dashboard_groups[dashboard] = [];
+    }
+                        
+    jQuery('h3.dashboard-item-title').each(function () {
+        var dashboard_name = jQuery(this).text();
+        if (jQuery.inArray(dashboard_name, dashboards) > -1) {
+            jQuery(this).parents('.dashboard-item-header').next('.dashboard-item-content').find('iframe').contents().find('tr.issuerow').each(function(){
+                var $row = jQuery(this),
+                    subsystem = $row.find('.customfield_10080 .labels').text().trim();
+
+                if (subsystem === "None" || subsystem.search('panama') > -1) {
+                    dashboard_groups[dashboard_name].push($row.attr('data-issuekey'));
                 }
             });
         }
     });
 
-    if( branches.length ){
-        var string = 'git merge';
-        for(var i=0; i<branches.length; i++){
+    for (dashboard_key in dashboards) {
+        dashboard = dashboards[dashboard_key];
+        branches = branches.concat(dashboard_groups[dashboard]);
+    }
+
+    if (branches.length) {
+        string = 'git merge';
+        for (i = 0, len = branches.length; i < len; i++) {
             string += ' origin/' + branches[i];
         }
         prompt('for the git', string);
-    }
-    else {
+    } else {
+        // Has this ever happened in the history of MMF?
         alert('No Branches');
     }
-}())
+}());
