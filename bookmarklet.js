@@ -8,6 +8,9 @@
         branches_count = 0,
         dashboards = [ // Put dashboards here in the order you want them merged
             'Filter Results: Ready for Production Deployment',
+            'Filter Results: Ready for CRUX QA',
+            'Filter Results: Ready for QA',
+            'Filter Results: Ready for Code Review',
             'Filter Results: Ready for Devint QA'
         ],
         dashboard_groups = {};
